@@ -1,19 +1,11 @@
 package de.derfilli.coffy;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Push;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.annotation.UIScope;
 import de.derfilli.coffy.service.CoffyService;
-import de.derfilli.coffy.service.Concepts.Coffee;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A sample Vaadin view class.
@@ -31,6 +23,8 @@ public class MainView extends VerticalLayout {
 
   private final Div coffeeCardHolder = new Div();
 
+  private final Div accountCardHolder = new Div();
+
   /**
    * Construct a new Vaadin view.
    * <p>
@@ -39,22 +33,42 @@ public class MainView extends VerticalLayout {
    * @param service The message service. Automatically injected Spring managed bean.
    */
   public MainView(CoffyService service) {
+    Button loadCoffees = new Button("Coffee Brands");
+    Button loadAccounts = new Button("Accounts");
 
-
-    Button loadCoffees = new Button("Load coffees");
-    loadCoffees.addClickListener(e -> {
-      coffeeCardHolder.removeAll();
-      service.getCoffees().map(CoffeeCard::new).doOnNext(
-          item ->
-          {
-            addCoffee(item);
+    loadAccounts.addClickListener(e -> {
+      coffeeCardHolder.setVisible(false);
+      accountCardHolder.setVisible(true);
+      accountCardHolder.removeAll();
+      service.getAccounts().map(AccountCard::new)
+          .doOnNext(account -> {
+            addAccount(account);
             refresh();
-          }
-      ).doOnComplete(this::refresh
-      ).subscribe();
+          })
+          .doOnComplete(this::refresh)
+          .subscribe();
     });
 
-    add(loadCoffees, coffeeCardHolder);
+    loadCoffees.addClickListener(e -> {
+      coffeeCardHolder.setVisible(true);
+      accountCardHolder.setVisible(false);
+      coffeeCardHolder.removeAll();
+      service.getCoffees().map(CoffeeCard::new)
+          .doOnNext(
+              item ->
+              {
+                addCoffee(item);
+                refresh();
+              })
+          .doOnComplete(this::refresh)
+          .subscribe();
+    });
+    HorizontalLayout buttons = new HorizontalLayout(loadCoffees, loadAccounts);
+    add(buttons, coffeeCardHolder, accountCardHolder);
+  }
+
+  private void addAccount(AccountCard account) {
+    getUI().ifPresent(ui -> ui.access(() -> accountCardHolder.add(account)));
   }
 
   protected void addCoffee(CoffeeCard coffee) {
@@ -62,9 +76,7 @@ public class MainView extends VerticalLayout {
   }
 
   protected void refresh() {
-    getUI().ifPresent(ui -> ui.access(() -> {
-      ui.push();
-    }));
+    getUI().ifPresent(ui -> ui.access(ui::push));
 
   }
 }
