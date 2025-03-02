@@ -4,7 +4,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.Paragraph;
-import de.derfilli.coffy.service.Concepts.Coffee;
+import de.derfilli.coffy.api.Concepts.Coffee;
 
 /**
  * <b><class short description - 1 Line!></b>

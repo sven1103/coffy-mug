@@ -2,7 +2,7 @@ package de.derfilli.coffy;
 
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H4;
-import de.derfilli.coffy.service.Concepts.Account;
+import de.derfilli.coffy.api.Concepts.Account;
 
 /**
  * <b><class short description - 1 Line!></b>

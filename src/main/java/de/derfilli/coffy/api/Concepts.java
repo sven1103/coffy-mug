@@ -1,10 +1,10 @@
-package de.derfilli.coffy.service;
+package de.derfilli.coffy.api;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import java.util.Map;
 
 /**
- * Service request and response query containers to interact with the coffy backend service.
+ * CoffyService request and response query containers to interact with the coffy backend service.
  *
  * @since 1.0.0
  */
@@ -29,7 +29,8 @@ public class Concepts {
                         @JsonAlias("owner") String owner,
                         @JsonAlias("balance") Float balance,
                         @JsonAlias("consumed_total") Integer consumedTotal) {
-
   }
+
+  public record AccountCreationRequest(@JsonAlias("owner") String owner){}
 
 }

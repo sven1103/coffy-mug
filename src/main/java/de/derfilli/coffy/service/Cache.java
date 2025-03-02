@@ -1,6 +1,6 @@
 package de.derfilli.coffy.service;
 
-import de.derfilli.coffy.service.Concepts.Coffee;
+import de.derfilli.coffy.api.Concepts.Coffee;
 import java.util.HashSet;
 import java.util.Set;
 import org.reactivestreams.Publisher;
