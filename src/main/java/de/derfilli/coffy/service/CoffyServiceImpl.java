@@ -5,7 +5,8 @@ import de.derfilli.coffy.api.CoffyService;
 import de.derfilli.coffy.api.Concepts.Account;
 import de.derfilli.coffy.api.Concepts.AccountCreationRequest;
 import de.derfilli.coffy.api.Concepts.Coffee;
-import java.time.Duration;
+import de.derfilli.coffy.api.Concepts.PurchaseReceipt;
+import de.derfilli.coffy.api.Concepts.PurchaseRequest;
 import java.util.Objects;
 import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,23 @@ public class CoffyServiceImpl implements CoffyService {
     return Mono.defer(createNewAccount(request));
   }
 
+  @Override
+  public Mono<PurchaseReceipt> purchase(PurchaseRequest request) {
+    if (request == null) {
+      return Mono.error(new IllegalArgumentException("request cannot be null"));
+    }
+    return Mono.defer(handlePurchase(request));
+  }
+
+  private Supplier<Mono<PurchaseReceipt>> handlePurchase(
+      PurchaseRequest request) {
+    return () -> client.post().uri("/consume")
+        .bodyValue(request)
+        .retrieve()
+        .bodyToMono(PurchaseReceipt.class)
+        .subscribeOn(VirtualThreadScheduler.getScheduler());
+  }
+
   private Supplier<Mono<Account>> createNewAccount(
       AccountCreationRequest request) {
     return () -> client.post().uri("/accounts")
@@ -68,7 +86,6 @@ public class CoffyServiceImpl implements CoffyService {
   private Flux<Coffee> queryCoffees() {
     return client.get().uri("/coffees")
         .retrieve().bodyToFlux(Coffee.class)
-        .delayElements(Duration.ofMillis(1000))
         .doOnNext(coffeeCache::add)
         .onErrorResume(coffeeCache::coffees)
         .subscribeOn(VirtualThreadScheduler.getScheduler());

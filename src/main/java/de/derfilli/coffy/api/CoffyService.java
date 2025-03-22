@@ -3,6 +3,8 @@ package de.derfilli.coffy.api;
 import de.derfilli.coffy.api.Concepts.Account;
 import de.derfilli.coffy.api.Concepts.AccountCreationRequest;
 import de.derfilli.coffy.api.Concepts.Coffee;
+import de.derfilli.coffy.api.Concepts.PurchaseReceipt;
+import de.derfilli.coffy.api.Concepts.PurchaseRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -39,15 +41,44 @@ public interface CoffyService {
    *                request
    * @return a {@link Mono} emitting the newly created {@link Account} or
    * {@link Mono#error(Throwable)} with one of the described exceptions.
-   * @throws AccountExistsException in case an account with the provided information already exists
+   * @throws AccountExistsException   in case an account with the provided information already
+   *                                  exists
+   * @throws IllegalArgumentException in case the request is invalid (e.g. null, empty information)
    * @since 1.0.0
    */
   Mono<Account> createAccount(AccountCreationRequest request);
+
+  /**
+   * Submits a purchase request to the server.
+   *
+   * @param request the {@link PurchaseRequest} with information about the purchase
+   * @return a {@link Mono} with the {@link PurchaseReceipt} after successful transaction. In case
+   * something went wrong or {@link Mono#error(Throwable)} with one of the described exceptions.
+   * @throws IllegalArgumentException if the request is invalid (e.g. null, empty)
+   * @throws UnknownAccountException  if the account ID does not match a known account
+   * @throws UnknownProductException  if the product ID does not match a known product
+   * @since 1.0.0
+   */
+  Mono<PurchaseReceipt> purchase(PurchaseRequest request);
 
 
   class AccountExistsException extends RuntimeException {
 
     AccountExistsException(String message) {
+      super(message);
+    }
+  }
+
+  class UnknownAccountException extends RuntimeException {
+
+    UnknownAccountException(String message) {
+      super(message);
+    }
+  }
+
+  class UnknownProductException extends RuntimeException {
+
+    UnknownProductException(String message) {
       super(message);
     }
   }

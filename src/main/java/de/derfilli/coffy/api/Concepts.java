@@ -1,6 +1,7 @@
 package de.derfilli.coffy.api;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import java.time.Instant;
 import java.util.Map;
 
 /**
@@ -68,6 +69,38 @@ public class Concepts {
    * @since 1.0.0
    */
   public record AccountCreationRequest(@JsonAlias("owner") String owner) {
+
+  }
+
+  /**
+   * A receipt to confirm the consumption of coffee.
+   *
+   * @param amount    the amount of coffee purchased
+   * @param date      the date of the transaction
+   * @param purpose   the purpose of the transaction
+   * @param recipient who received the purchase request (the seller)
+   * @param submitter who submitted the purchase request (the buyer)
+   * @since 1.0.0
+   */
+  public record PurchaseReceipt(@JsonAlias("amount") Integer amount,
+                                @JsonAlias("date") Instant date,
+                                @JsonAlias("purpose") String purpose,
+                                @JsonAlias("recipient") String recipient,
+                                @JsonAlias("submitter") String submitter) {
+
+  }
+
+  /**
+   * A simple purchase in coffy.
+   *
+   * @param accountID the account ID to debit with the purchase
+   * @param productID the product ID of the product purchased
+   * @param quantity  the amount of the product to purchase
+   * @since 1.0.0
+   */
+  public record PurchaseRequest(@JsonAlias("account_id") String accountID,
+                                @JsonAlias("product_id") String productID,
+                                @JsonAlias("quantity") Integer quantity) {
 
   }
 
