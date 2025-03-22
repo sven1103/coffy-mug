@@ -16,11 +16,9 @@ import reactor.core.publisher.Mono;
 
 
 /**
- * <b><class short description - 1 Line!></b>
+ * Implementation of the {@link CoffyService} interface.
  *
- * <p><More detailed description - When to use, what it solves, etc.></p>
- *
- * @since <version tag>
+ * @since 1.0.0
  */
 @Service
 public class CoffyServiceImpl implements CoffyService {
