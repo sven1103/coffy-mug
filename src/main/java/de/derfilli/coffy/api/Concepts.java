@@ -1,6 +1,7 @@
 package de.derfilli.coffy.api;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
 import java.util.Map;
 
@@ -68,7 +69,7 @@ public class Concepts {
    * @param owner the account owner's name
    * @since 1.0.0
    */
-  public record AccountCreationRequest(@JsonAlias("owner") String owner) {
+  public record AccountCreationRequest(@JsonProperty("owner") String owner) {
 
   }
 
@@ -82,7 +83,7 @@ public class Concepts {
    * @param submitter who submitted the purchase request (the buyer)
    * @since 1.0.0
    */
-  public record PurchaseReceipt(@JsonAlias("amount") Integer amount,
+  public record PurchaseReceipt(@JsonAlias("amount") Float amount,
                                 @JsonAlias("date") Instant date,
                                 @JsonAlias("purpose") String purpose,
                                 @JsonAlias("recipient") String recipient,
@@ -98,9 +99,9 @@ public class Concepts {
    * @param quantity  the amount of the product to purchase
    * @since 1.0.0
    */
-  public record PurchaseRequest(@JsonAlias("account_id") String accountID,
-                                @JsonAlias("product_id") String productID,
-                                @JsonAlias("quantity") Integer quantity) {
+  public record PurchaseRequest(@JsonProperty("account_id") String accountID,
+                                @JsonProperty("product_id") String productID,
+                                @JsonProperty("quantity") Integer quantity) {
 
   }
 

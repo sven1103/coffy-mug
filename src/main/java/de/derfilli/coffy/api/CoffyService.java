@@ -43,6 +43,7 @@ public interface CoffyService {
    * {@link Mono#error(Throwable)} with one of the described exceptions.
    * @throws AccountExistsException   in case an account with the provided information already
    *                                  exists
+   * @throws RequestFailedException   in case the request cannot be processed by the service
    * @throws IllegalArgumentException in case the request is invalid (e.g. null, empty information)
    * @since 1.0.0
    */
@@ -55,6 +56,7 @@ public interface CoffyService {
    * @return a {@link Mono} with the {@link PurchaseReceipt} after successful transaction. In case
    * something went wrong or {@link Mono#error(Throwable)} with one of the described exceptions.
    * @throws IllegalArgumentException if the request is invalid (e.g. null, empty)
+   * @throws RequestFailedException   in case the request cannot be processed by the service
    * @throws UnknownAccountException  if the account ID does not match a known account
    * @throws UnknownProductException  if the product ID does not match a known product
    * @since 1.0.0
@@ -79,6 +81,13 @@ public interface CoffyService {
   class UnknownProductException extends RuntimeException {
 
     UnknownProductException(String message) {
+      super(message);
+    }
+  }
+
+  class RequestFailedException extends RuntimeException {
+
+    public RequestFailedException(String message) {
       super(message);
     }
   }

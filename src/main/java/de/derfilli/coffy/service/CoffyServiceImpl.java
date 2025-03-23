@@ -7,11 +7,14 @@ import de.derfilli.coffy.api.Concepts.AccountCreationRequest;
 import de.derfilli.coffy.api.Concepts.Coffee;
 import de.derfilli.coffy.api.Concepts.PurchaseReceipt;
 import de.derfilli.coffy.api.Concepts.PurchaseRequest;
+import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Supplier;
+import javax.security.auth.login.AccountNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -64,6 +67,14 @@ public class CoffyServiceImpl implements CoffyService {
         .bodyValue(request)
         .retrieve()
         .bodyToMono(PurchaseReceipt.class)
+        .onErrorMap(WebClientResponseException.class,
+            throwable -> {
+              throwable.printStackTrace();
+              return switch (throwable.getStatusCode().value()) {
+                case 404 -> new AccountNotFoundException("Account not found");
+                default -> new RequestFailedException("Could not process request");
+              };
+            })
         .subscribeOn(VirtualThreadScheduler.getScheduler());
   }
 
